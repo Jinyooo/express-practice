@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1>API 로 값 가져오기</h1>
+    <input type="number" id="num">
+    <button id="btnapi">확인</button>
+    <p id="apitext"></p>
+    
+    <!--<p id="restext"></p>
+      <button id="resbtn">식당이름 확인</button>
+      
+    -->
+    
+    <script>
+      // Ajax
+      function openapi() {
+        const req = new XMLHttpRequest();
+
+        req.open('GET', "https://busan-food.openapi.redtable.global/api/menu/korean?serviceKey=3cOsoxEnSZYVeTrfKrARQcYYonhykJwpZEurgWtYALHVUijbNn2a5tu7p5V7MIcw")
+        req.send();
+        req.onreadystatechange =function() {
+          if ( this.readyState==4 && this.status==200 ) {
+            // p태그에 출력
+            const apitext = document.querySelector("#apitext");
+            const num = document.querySelector("#num")
+
+            // string 문자열을 JSON 객체 형식으로 바꿈
+            const data = JSON.parser(this.response);
+
+            // 식당이름 출력하기 "RESR_NM"
+            //const restext = document.querySelector("#restext");
+            // apitext.innerHTML = data.body[num.value].RSTR_NM;
+
+            apitext.textContent = data.body[num.value].RSTR_NM;
+            apitext.textContent += data.body[num.value].MENU_NM;
+            apitext.textContent += data.body[num.value].MENU_PRICE;
+
+
+
+            // apitext.innerHTML = data.body[0].MENU_NM;
+            // apitext.innerHTML = data.body[0].MENU_PRICE;
+
+            console.log(this.response);
+          }
+        }
+      }
+
+      const btnapi =  document.querySelector("#btnapi");
+      btnapi.addEventListener('click', openapi);
+      
+      /*
+      function showapi() {
+        const req = new XMLHttpRequest();
+        req.open('GET', "https://busan-food.openapi.redtable.global/api/menu/korean?serviceKey=3cOsoxEnSZYVeTrfKrARQcYYonhykJwpZEurgWtYALHVUijbNn2a5tu7p5V7MIcw");
+
+        req.send();
+        req.onreadystatechange = function() {
+          if ( this.readyState==4 && this.status==200) {
+            const data = JSON.parse();
+            const restext = document.querySelector("#restext");
+            restext.innerHTML = data.body[0].RESR_NM;
+          }
+        }
+      }
+      
+      const resbtn = document.querySelector("#resbtn");
+      resbtn.addEventListener('click', showapi)
+      */
+
+    </script>
+  </body>
+</html>

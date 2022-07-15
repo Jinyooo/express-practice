@@ -1,0 +1,112 @@
+#!/usr/bin/env node
+
+/**
+ * www 파일이 서버와 관련된 모든 모듈을 가져와 연결함
+ * Module dependencies.
+ */
+
+
+var app = require('../app');  // app.js 서버 들고옴
+var debug = require('debug')('chatting-app:server');
+var http = require('http');
+const socket = require('socket.io'); // 소켓 모듈 가져오기
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+var port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
+
+/**
+ * Create HTTP server.
+ * app 을 들고와서 http 모듈을 이용해서 서버를 만들어줌 
+ */
+var server = http.createServer(app); 
+// http 서버를 소켓과 연결
+const io = socket(server);
+
+// io 를 통해 connection 이벤트 발생한다면 다음을 콘솔에 출력
+io.sockets.on('connection', function (socket) {
+  console.log("유저접속됨");
+
+  socket.on('send', function(data) { // data는 객체형태로 받아옴
+    console.log('전달된 메시지 : ', data.msg);
+    // io 통해서 send 이벤트 생성후 data값과 함께 보내기
+    io.emit('send', data);
+  });
+
+  socket.on('disconnect', function () {
+    console.log('접속종료');
+  });
+});
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+  console.log('서버 실행중')
+}

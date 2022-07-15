@@ -1,0 +1,32 @@
+<html>
+
+<head>
+  <title>Express</title>
+
+  <!-- 적용할 css 파일 링크 -->
+  <link rel="stylesheet" href="/stylesheets/style.css">
+  
+</head>
+
+<body>
+  <!-- 클라이언트 측에서 보내줄 화면 -->
+  <div>
+    <ul id="chatting">
+      <li> </li>
+    </ul>
+  </div>
+
+  <div id="main">
+    <input type="text" id="test">
+    <button onclick="send()">send</button>
+  </div>
+
+  <!-- 클라이언트 소켓 설치-->
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="./javascripts/index.js"></script>
+
+</body>
+
+
+</html>
